@@ -1,4 +1,4 @@
-# SAQ-method
+# SAQ: semi-algebraic quartet reconstruction method
 
 SAQ V.1.0
 Update: Dec/2020
