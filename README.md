@@ -46,7 +46,7 @@ The executable files SAQ have been written in C++ code and compiled using the c+
 ```
 The parameter _filter_ can be omitted. 
 
-###Examples:
+### Examples:
 ```
   ./SAQ /home/user/data/alignment.fa -0.5
   ./SAQ /home/user/data/alignment.fa
