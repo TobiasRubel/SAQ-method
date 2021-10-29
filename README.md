@@ -36,8 +36,8 @@ The executable files SAQ have been written in C++ code and compiled using the c+
 
 ### Compiling SAQ
 ```
-  g++ -std=c++11 -c functionsSAQ.cpp -O1 -larmadillo
-  g++ -std=c++11 SAQ.cpp functionsSAQ.o -o SAQ -O1 -larmadillo
+  g++ -std=c++11 -c functionsSAQ.cpp -O2 -larmadillo
+  g++ -std=c++11 SAQ.cpp functionsSAQ.o -o SAQ -O2 -larmadillo
 ```
     
 ### Running an experiment

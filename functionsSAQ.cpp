@@ -38,7 +38,7 @@ Alignment readFASTA (string fname) {
   vector<int> al_length;
   //opening file
   file.open(fname.c_str(), fstream::in); //open(pointer to filename, type i.e. in/out)
- 	if (file == NULL) {
+ 	if (!file) {
  		cout <<"cannot open file " << fname.c_str() << "\n";
  		exit(1);
 	}
@@ -294,10 +294,10 @@ double projeccio_rankdist_sl(mat A, int k, bool normalize){
 
 
 int numb (int a, int b, int c){
-	if (a!=4 and b!=4 and c!=4) return 4;
-	else if (a!=3 and b!=3 and c!=3) return 3;
-	else if (a!=2 and b!=2 and c!=2) return 2;
-	else if (a!=1 and b!=1 and c!=1) return 1;
+	if (a!=4 && b!=4 && c!=4) return 4;
+	else if (a!=3 && b!=3 && c!=3) return 3;
+	else if (a!=2 && b!=2 && c!=2) return 2;
+	else if (a!=1 && b!=1 && c!=1) return 1;
 }
 
 
