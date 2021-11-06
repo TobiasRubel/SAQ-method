@@ -37,15 +37,25 @@ int main(int argc, char **argv)
         return 1;
     }
     string filename = argv[1];
-    double filter;
 
+    string outfilename;
     if (argv[2] == NULL)
+    {
+        outfilename = "output.txt";
+    }
+    else
+    {
+        outfilename = argv[2];
+    }
+
+    double filter;
+    if (argv[3] == NULL)
     {
         filter = -1;
     }
     else
     {
-        filter = stod(argv[2]);
+        filter = stod(argv[3]);
     }
 
     // READ DATA
@@ -88,10 +98,9 @@ int main(int argc, char **argv)
          << sp0 << sp3 << "|" << sp1 << sp2 << endl;
     cout << "SAQ weights: \t" << score_01 / sum << "\t " << score_02 / sum << "\t " << score_03 / sum << endl;
 
-    string filename2("tmp.txt");
     ofstream file_out;
 
-    file_out.open(filename2, std::ios_base::app);
+    file_out.open(outfilename, std::ios_base::app);
 
     if (score_01 >= score_02 && score_01 >= score_03)
     {
