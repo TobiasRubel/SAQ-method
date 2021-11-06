@@ -105,17 +105,17 @@ int main(int argc, char **argv)
     if (score_01 >= score_02 && score_01 >= score_03)
     {
         cout << "Best: " << sp0 << sp1 << "|" << sp2 << sp3 << endl;
-        file_out << sp0 << sp1 << "|" << sp2 << sp3 << " ";
+        file_out << sp0 << "," << sp1 << "|" << sp2 << "," << sp3 << " ";
     }
     else if (score_02 >= score_01 && score_02 >= score_03)
     {
         cout << "Best: " << sp0 << sp2 << "|" << sp1 << sp3 << endl;
-        file_out << sp0 << sp2 << "|" << sp1 << sp3 << " ";
+        file_out << sp0 << "," << sp2 << "|" << sp1 << "," << sp3 << " ";
     }
     else if (score_03 >= score_01 && score_03 >= score_01)
     {
         cout << "Best: " << sp0 << sp3 << "|" << sp1 << sp2 << endl;
-        file_out << sp0 << sp3 << "|" << sp1 << sp2 << " ";
+        file_out << sp0 << "," << sp3 << "|" << sp1 << "," << sp2 << " ";
     }
 
     return (0);
