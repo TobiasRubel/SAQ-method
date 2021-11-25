@@ -88,15 +88,15 @@ int main(int argc, char **argv)
     sp2 = align.taxa[2];
     sp3 = align.taxa[3];
 
-    cout << endl;
-    cout << "Taxa 1: " << sp0 << endl;
-    cout << "Taxa 2: " << sp1 << endl;
-    cout << "Taxa 3: " << sp2 << endl;
-    cout << "Taxa 4: " << sp3 << endl;
-    cout << "Topologies : \t" << sp0 << sp1 << "|" << sp2 << sp3 << "\t \t "
-         << sp0 << sp2 << "|" << sp1 << sp3 << "\t \t "
-         << sp0 << sp3 << "|" << sp1 << sp2 << endl;
-    cout << "SAQ weights: \t" << score_01 / sum << "\t " << score_02 / sum << "\t " << score_03 / sum << endl;
+    // cout << endl;
+    // cout << "Taxa 1: " << sp0 << endl;
+    // cout << "Taxa 2: " << sp1 << endl;
+    // cout << "Taxa 3: " << sp2 << endl;
+    // cout << "Taxa 4: " << sp3 << endl;
+    // cout << "Topologies : \t" << sp0 << sp1 << "|" << sp2 << sp3 << "\t \t "
+    //      << sp0 << sp2 << "|" << sp1 << sp3 << "\t \t "
+    //      << sp0 << sp3 << "|" << sp1 << sp2 << endl;
+    // cout << "SAQ weights: \t" << score_01 / sum << "\t " << score_02 / sum << "\t " << score_03 / sum << endl;
 
     ofstream file_out;
 
@@ -104,17 +104,17 @@ int main(int argc, char **argv)
 
     if (score_01 >= score_02 && score_01 >= score_03)
     {
-        cout << "Best: " << sp0 << sp1 << "|" << sp2 << sp3 << endl;
+        // cout << "Best: " << sp0 << sp1 << "|" << sp2 << sp3 << endl;
         file_out << sp0 << "," << sp1 << "|" << sp2 << "," << sp3 << " ";
     }
     else if (score_02 >= score_01 && score_02 >= score_03)
     {
-        cout << "Best: " << sp0 << sp2 << "|" << sp1 << sp3 << endl;
+        // cout << "Best: " << sp0 << sp2 << "|" << sp1 << sp3 << endl;
         file_out << sp0 << "," << sp2 << "|" << sp1 << "," << sp3 << " ";
     }
     else if (score_03 >= score_01 && score_03 >= score_01)
     {
-        cout << "Best: " << sp0 << sp3 << "|" << sp1 << sp2 << endl;
+        // cout << "Best: " << sp0 << sp3 << "|" << sp1 << sp2 << endl;
         file_out << sp0 << "," << sp3 << "|" << sp1 << "," << sp2 << " ";
     }
 
