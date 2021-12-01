@@ -3,8 +3,8 @@
 
 // This file is part of the "SAQ" program
 /*
-This code has been written by  M. Garrote-López. 
-Please quote the paper: M. Casanellas, J. Fernández-Sánchez, M. Garrote-López
+This code has been written by  M. Garrote-Lï¿½pez. 
+Please quote the paper: M. Casanellas, J. Fernï¿½ndez-Sï¿½nchez, M. Garrote-Lï¿½pez
 "SAQ: semi-algebraic quartet reconstruction method", https://arxiv.org/abs/2011.13968
 */
 
@@ -36,6 +36,7 @@ struct Alignment {
 
 Alignment readFASTA (string fname);
 map<string, int> Getcolumns (Alignment &align);
+vector<Alignment> GetAlignmentSubsets (Alignment &align);
 T4F convert_tensor_4 (map <string, int> tensor, int n);
 mat marginalization_3 (cube Mtensor, int m);
 cube marginalization_4 (T4F Mtensor, int m);

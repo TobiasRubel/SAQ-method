@@ -3,8 +3,8 @@
 
 // This file is part of the "SAQ" program
 /*
-This code has been written by  M. Garrote-López. 
-Please quote the paper: M. Casanellas, J. Fernández-Sánchez, M. Garrote-López
+This code has been written by  M. Garrote-Lï¿½pez. 
+Please quote the paper: M. Casanellas, J. Fernï¿½ndez-Sï¿½nchez, M. Garrote-Lï¿½pez
 "SAQ: semi-algebraic quartet reconstruction method", https://arxiv.org/abs/2011.13968
 */
 
@@ -120,6 +120,42 @@ map<string, int> Getcolumns (Alignment &align){
 	}
 	return (columnscount);
 }
+
+vector<Alignment> GetAlignmentSubsets (Alignment &align) {
+	vector<Alignment> subsets;
+	// vector<vector<string>> subsets;
+
+	string bitmask(4, 1);
+	bitmask.resize(align.num_taxa, 0);
+
+	do {
+		vector<string> currSubsetTaxa;
+		for (int i = 0; i < align.num_taxa; ++i) {
+			if (bitmask[i]) {
+				currSubsetTaxa.push_back(align.taxa[i]);
+			}			
+		}
+
+		// currSubset is a list of taxa names
+		// We need to turn those four taxa names into an alignment
+
+		Alignment currAlign;
+		currAlign.num_taxa = 4;
+		currAlign.seq_len = align.seq_len;
+		currAlign.taxa = currSubsetTaxa;
+		map<string,string> seqs;
+		for (int i = 0; i < currSubsetTaxa.size(); ++i) {
+			string taxa = currSubsetTaxa[i];
+			seqs[taxa] = align.seqs[taxa];
+		}
+		currAlign.seqs = seqs;
+		subsets.push_back(currAlign);
+	} while (prev_permutation(bitmask.begin(), bitmask.end()));
+
+	return subsets;
+} 
+
+
 
 T4F convert_tensor_4 (map <string, int> tensor, int n){
 		T4F Mtensor(4, T3F(4, MF(4, VF(4,0))));

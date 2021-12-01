@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     }
 
     double filter;
-    if (argv[3] == NULL)
+    if (argc < 3 || argv[3] == NULL)
     {
         filter = -1;
     }
@@ -58,65 +58,83 @@ int main(int argc, char **argv)
         filter = stod(argv[3]);
     }
 
+    double num_threads;
+    if (argc < 4 || argv[4] == NULL) 
+    {
+        num_threads = 1;
+    }
+    else
+    {
+        num_threads = stod(argv[4]);
+    }
+    omp_set_num_threads(num_threads);
+    cout << "Running SAQ with " << num_threads << " threads.\n";
+
     // READ DATA
     Alignment align = readFASTA(filename);
-    map<string, int> tensor = Getcolumns(align);
     int length = align.seq_len;
 
-    // SAQ method
-    T4F Mtensor = convert_tensor_4(tensor, length);
-    T4F zeroTens = T4F(4, T3F(4, MF(4, VF(4, 0))));
-    MM Ns = double_marginalizations(Mtensor);
-    int rank_matrix = 4;
-    double eps = 1e-7;
+    vector<Alignment> subsets = GetAlignmentSubsets(align);
+    cout << "Number of subsets: " << subsets.size() << "\n";
 
-    vec aux_01 = SAQ(Mtensor, {0, 1, 2, 3}, Ns, rank_matrix, filter);
-    vec aux_02 = SAQ(Mtensor, {0, 2, 1, 3}, Ns, rank_matrix, filter);
-    vec aux_03 = SAQ(Mtensor, {0, 3, 1, 2}, Ns, rank_matrix, filter);
+    string bestQuartets[subsets.size()];
 
-    double score_01, score_02, score_03;
-    double weight_01, weight_02, weight_03;
+    #pragma omp parallel 
+    {
+    #pragma omp for
+    for (int i = 0; i < subsets.size(); ++i) {
+        map<string, int> tensor = Getcolumns(subsets[i]);
 
-    score_01 = aux_01[0];
-    score_02 = aux_02[0];
-    score_03 = aux_03[0];
+        // SAQ method
+        T4F Mtensor = convert_tensor_4(tensor, length);
+        T4F zeroTens = T4F(4, T3F(4, MF(4, VF(4, 0))));
+        MM Ns = double_marginalizations(Mtensor);
+        int rank_matrix = 4;
+        double eps = 1e-7;
 
-    double sum = score_01 + score_02 + score_03;
-    string sp0, sp1, sp2, sp3;
-    sp0 = align.taxa[0];
-    sp1 = align.taxa[1];
-    sp2 = align.taxa[2];
-    sp3 = align.taxa[3];
+        vec aux_01 = SAQ(Mtensor, {0, 1, 2, 3}, Ns, rank_matrix, filter);
+        vec aux_02 = SAQ(Mtensor, {0, 2, 1, 3}, Ns, rank_matrix, filter);
+        vec aux_03 = SAQ(Mtensor, {0, 3, 1, 2}, Ns, rank_matrix, filter);
 
-    // cout << endl;
-    // cout << "Taxa 1: " << sp0 << endl;
-    // cout << "Taxa 2: " << sp1 << endl;
-    // cout << "Taxa 3: " << sp2 << endl;
-    // cout << "Taxa 4: " << sp3 << endl;
-    // cout << "Topologies : \t" << sp0 << sp1 << "|" << sp2 << sp3 << "\t \t "
-    //      << sp0 << sp2 << "|" << sp1 << sp3 << "\t \t "
-    //      << sp0 << sp3 << "|" << sp1 << sp2 << endl;
-    // cout << "SAQ weights: \t" << score_01 / sum << "\t " << score_02 / sum << "\t " << score_03 / sum << endl;
+        double score_01, score_02, score_03;
+        double weight_01, weight_02, weight_03;
+
+        score_01 = aux_01[0];
+        score_02 = aux_02[0];
+        score_03 = aux_03[0];
+
+        double sum = score_01 + score_02 + score_03;
+        string sp0, sp1, sp2, sp3;
+        sp0 = subsets[i].taxa[0];
+        sp1 = subsets[i].taxa[1];
+        sp2 = subsets[i].taxa[2];
+        sp3 = subsets[i].taxa[3];
+        
+        if (score_02 >= score_01 && score_02 >= score_03)
+        {
+            bestQuartets[i] = sp0 + "," + sp2 + "|" + sp1 + "," + sp3;
+        }
+        else if (score_03 >= score_01 && score_03 >= score_01)
+        {
+            bestQuartets[i] = sp0 + "," + sp3 + "|" + sp1 + "," + sp2;
+        }
+        else //if (score_01 >= score_02 && score_01 >= score_03)
+        {
+            bestQuartets[i] = sp0 + "," + sp1 + "|" + sp2 + "," + sp3;
+        }
+    }
+    }
+
+    string quartetOutput = "";
+    for (int i = 0; i < subsets.size(); i++) {
+        quartetOutput += bestQuartets[i] + " ";
+    }
 
     ofstream file_out;
-
-    file_out.open(outfilename, std::ios_base::app);
-
-    if (score_01 >= score_02 && score_01 >= score_03)
-    {
-        // cout << "Best: " << sp0 << sp1 << "|" << sp2 << sp3 << endl;
-        file_out << sp0 << "," << sp1 << "|" << sp2 << "," << sp3 << " ";
-    }
-    else if (score_02 >= score_01 && score_02 >= score_03)
-    {
-        // cout << "Best: " << sp0 << sp2 << "|" << sp1 << sp3 << endl;
-        file_out << sp0 << "," << sp2 << "|" << sp1 << "," << sp3 << " ";
-    }
-    else if (score_03 >= score_01 && score_03 >= score_01)
-    {
-        // cout << "Best: " << sp0 << sp3 << "|" << sp1 << sp2 << endl;
-        file_out << sp0 << "," << sp3 << "|" << sp1 << "," << sp2 << " ";
-    }
+    file_out.open(outfilename);
+    file_out << quartetOutput;
+    file_out.close();
 
     return (0);
 }
+
